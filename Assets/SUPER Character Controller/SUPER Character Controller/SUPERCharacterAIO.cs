@@ -13,11 +13,6 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 #endif
 
-///TODO
-// Better implement the new input system.
-// create compatibility layers for Unity 2017 and 2018
-// better implement animation calls(?)
-// more camera animations
 namespace SUPERCharacter{
 [RequireComponent(typeof(Rigidbody)), RequireComponent(typeof(CapsuleCollider))][AddComponentMenu("SUPER Character/SUPER Character Controller")]
 public class SUPERCharacterAIO : MonoBehaviour{
@@ -601,11 +596,7 @@ public class SUPERCharacterAIO : MonoBehaviour{
             #endregion
         }
     }
-    private void OnTriggerEnter(Collider other){
-        #region Collectables
-        other.GetComponent<ICollectable>()?.Collect();
-        #endregion
-    }
+ 
  
     #region Camera Functions
     void RotateView(Vector2 yawPitchInput, float inputSensitivity, float cameraWeight){
