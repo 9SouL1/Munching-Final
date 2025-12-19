@@ -4,7 +4,6 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-
 public class AdvancedEatingController : MonoBehaviour
 {
     [Header("UI & Animation")]
@@ -16,7 +15,9 @@ public class AdvancedEatingController : MonoBehaviour
     public int totalBitesRequired = 5;
     public float timePerBite = 1.0f;
 
-    private bool isEating = false;
+    // CHANGED TO PUBLIC: Now the NPCChaser script can detect this
+    public bool isEating = false;
+
     // Moved outside the routine so it persists
     private int currentBitesDone = 0;
 
@@ -31,7 +32,7 @@ public class AdvancedEatingController : MonoBehaviour
 
     IEnumerator EatRoutine()
     {
-        isEating = true;
+        isEating = true; // NPC will start chasing now
 
         if (barContainer != null) barContainer.SetActive(true);
         if (anim != null) anim.SetBool("IsEating", true);
@@ -70,19 +71,15 @@ public class AdvancedEatingController : MonoBehaviour
 
     void StopEatingEarly()
     {
-        isEating = false;
-        // We REMOVED currentBitesDone = 0; so it stays at its current value
+        isEating = false; // NPC stops chasing because player stopped eating
         if (barContainer != null) barContainer.SetActive(false);
         if (anim != null) anim.SetBool("IsEating", false);
-
-        // Optional: Keep the bar where it is, or hide it. 
-        // If you hide it, the value stays ready for next time.
     }
 
     void CompleteEating()
     {
         // 1. Reset State
-        isEating = false;
+        isEating = false; // NPC stops chasing because food is finished
         currentBitesDone = totalBitesRequired;
 
         // 2. UI Feedback
