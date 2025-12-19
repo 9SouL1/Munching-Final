@@ -455,6 +455,7 @@ namespace SUPERCharacter
                     slideInput_Momentary = Keyboard.current[slideKey].isPressed;
                     slideInput_FrameOf = Keyboard.current[slideKey].wasPressedThisFrame;
                 }
+
 #if SAIO_ENABLE_PARKOUR
             vaultInput = Keyboard.current[VaultKey].isPressed;
 #endif
@@ -2518,6 +2519,7 @@ namespace SUPERCharacter
             tSO = new SerializedObject(t);
             groundMatProf = tSO.FindProperty("footstepSoundSet");
         }
+
 #endif
         #endregion
 
