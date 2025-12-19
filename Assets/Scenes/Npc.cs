@@ -7,10 +7,12 @@ public class NPCChaser : MonoBehaviour
     [Header("Detection Settings")]
     public AdvancedEatingController playerEatingScript;
     public float chaseDistance = 15f;
-    public float catchDistance = 1.8f; // Increased slightly to prevent physics clipping
-    public string gameOverScene = "GameOver";
+    public float catchDistance = 1.8f;
+    public string gameOverScene = "UIScene"; // Set this to your UI scene name
 
-    [Header("Wander Settings")]
+    [Header("Movement Settings")]
+    public float walkSpeed = 2f;
+    public float chaseSpeed = 5f;
     public float wanderRadius = 15f;
     public float wanderInterval = 3f;
 
@@ -23,11 +25,9 @@ public class NPCChaser : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
 
-        // Find the player script automatically
         if (playerEatingScript == null)
             playerEatingScript = Object.FindFirstObjectByType<AdvancedEatingController>();
 
-        // Force the first wander destination immediately
         wanderTimer = wanderInterval;
     }
 
@@ -37,33 +37,35 @@ public class NPCChaser : MonoBehaviour
 
         float distanceToPlayer = Vector3.Distance(transform.position, playerEatingScript.transform.position);
 
-        // 1. CHASE TRIGGER: Must be eating AND within sight range
-        if (playerEatingScript.isEating && distanceToPlayer <= chaseDistance)
+        // 1. STATE LOGIC: CHASE vs WANDER
+        bool isPlayerEating = playerEatingScript.isEating;
+
+        if (isPlayerEating && distanceToPlayer <= chaseDistance)
         {
+            // CHASE STATE
+            agent.speed = chaseSpeed;
             agent.SetDestination(playerEatingScript.transform.position);
-            agent.speed = 5f; // Running speed
+
             if (anim != null) anim.SetBool("IsChasing", true);
         }
         else
         {
-            // 2. AUTOMATIC WANDERING: If not chasing, walk randomly
-            agent.speed = 2f; // Walking speed
+            // WANDER STATE (Walking randomly)
+            agent.speed = walkSpeed;
             if (anim != null) anim.SetBool("IsChasing", false);
             DoWander();
         }
 
-        // 3. GAME OVER TRIGGER
-        // If NPC gets close enough, load the Game Over scene
+        // 2. GAME OVER TRIGGER
         if (distanceToPlayer <= catchDistance)
         {
-            Debug.Log("Caught the player!");
             SceneManager.LoadScene(gameOverScene);
         }
 
-        // 4. ANIMATION SYNC
+        // 3. ANIMATION SYNC (Calculates Idle vs Walk)
         if (anim != null)
         {
-            // Update "Speed" float for Idle/Walk blend tree
+            // 'Speed' float handles the transition from Idle (0) to Walk (2)
             anim.SetFloat("Speed", agent.velocity.magnitude);
         }
     }
@@ -72,14 +74,12 @@ public class NPCChaser : MonoBehaviour
     {
         wanderTimer += Time.deltaTime;
 
-        // Pick a new spot if time is up OR we reached the current spot
         if (wanderTimer >= wanderInterval || (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending))
         {
             Vector3 randomDirection = Random.insideUnitSphere * wanderRadius;
             randomDirection += transform.position;
 
             NavMeshHit hit;
-            // Finds a valid point on the NavMesh
             if (NavMesh.SamplePosition(randomDirection, out hit, wanderRadius, NavMesh.AllAreas))
             {
                 agent.SetDestination(hit.position);
