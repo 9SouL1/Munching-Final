@@ -14,5 +14,5 @@ AssetOrigin:
   productId: 135316
   packageName: Character Controller SUPER
   packageVersion: 22.10.9f
-  assetPath: Assets/SUPER Character Controller/SUPER Character Controller/SUPERCharacterAIO.cs
+  assetPath: Assets/Scripts/SUPERCharacterAIO.cs
   uploadId: 532477
