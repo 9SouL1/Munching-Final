@@ -7,7 +7,7 @@ public sealed class AddedAnimations : MonoBehaviour
 
     [Header("Animator Parameter Names")]
     [SerializeField] private string walkingParam = "IsWalking";
-    [SerializeField] private string sprintingParam = "IsSprinting";
+    [SerializeField] private string sprintingParam = "Sprinting";
 
     void Awake()
     {
