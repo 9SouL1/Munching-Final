@@ -8,7 +8,7 @@ public class NPCChaser : MonoBehaviour
     public AdvancedEatingController playerEatingScript;
     public float chaseDistance = 15f;
     public float catchDistance = 1.8f;
-    public string gameOverScene = "UIScene"; // Set this to your UI scene name
+    public string gameOverScene = "UIScene";
 
     [Header("Movement Settings")]
     public float walkSpeed = 2f;
@@ -46,6 +46,7 @@ public class NPCChaser : MonoBehaviour
             agent.speed = chaseSpeed;
             agent.SetDestination(playerEatingScript.transform.position);
 
+            // Set the Bool for the transition to the separate "Chase" state
             if (anim != null) anim.SetBool("IsChasing", true);
         }
         else
@@ -62,11 +63,14 @@ public class NPCChaser : MonoBehaviour
             SceneManager.LoadScene(gameOverScene);
         }
 
-        // 3. ANIMATION SYNC (Calculates Idle vs Walk)
+        // 3. ANIMATION SYNC (This controls the Blend Tree)
         if (anim != null)
         {
-            // 'Speed' float handles the transition from Idle (0) to Walk (2)
-            anim.SetFloat("Speed", agent.velocity.magnitude);
+            // Using desiredVelocity ensures the animation starts as soon as the agent starts to turn or move
+            float currentMoveSpeed = agent.desiredVelocity.magnitude;
+
+            // This updates the 'Speed' parameter in your Blend Tree
+            anim.SetFloat("Speed", currentMoveSpeed);
         }
     }
 
