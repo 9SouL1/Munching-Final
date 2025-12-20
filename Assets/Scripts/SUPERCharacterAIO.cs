@@ -2521,7 +2521,6 @@ namespace SUPERCharacter
         }
 
 #endif
-        #endregion
-
-        }
+#endregion
     }
+}
